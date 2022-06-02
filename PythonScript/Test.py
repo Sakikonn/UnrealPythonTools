@@ -1,5 +1,3 @@
-from pickle import TRUE
-from tkinter import N
 import unreal
 import sys
 import argparse
@@ -150,6 +148,16 @@ def SetEditorLanguage(language:str):
 def GetCurEditorLanguage():
     return unreal.InternationalizationLibrary().get_current_language()
     
+def CreateMovieRenderPipelineSettings(): # 这是一个示例  如何创建一个MoviePipelineMasterConfig
+    Asset_Tools = unreal.AssetToolsHelpers.get_asset_tools()
+    # unreal.AssetTools.create_asset_with_dialog
+    TupleName = unreal.AssetTools.create_unique_asset_name(Asset_Tools,'/Game/ASD/abc',"")
+    UniquePackageName ,UniqueAssetName = TupleName # 存入唯一包名 和 唯一资产名
+    Config = unreal.MoviePipelineMasterConfig.get_default_object()
+    unreal.MoviePipelineMasterConfig.initialize_transient_settings(Config)
+    print(unreal.MoviePipelineEditorLibrary.export_config_to_asset(Config,UniquePackageName,UniqueAssetName,False))
+    unreal.log_error(TupleName)
+    pass
 
 def EditorMode():
     # unreal.log_error("Test...\n..\n.")
@@ -161,8 +169,40 @@ def EditorMode():
     # unreal.InternationalizationLibrary().set_current_language("zh-Hans",True)
    
     # unreal.LevelEditorSubsystem().editor_set_game_view(True)
-    unreal.log_warning(unreal.GameUserSettings().get_default_window_mode())
+    # unreal.log_warning(unreal.GameUserSettings().get_default_window_mode())
 
+    # //////
+    # CreateMovieRenderPipelineSettings()
+    # //////
+
+    # CreateAssetTest()
+    Test()
+    pass
+
+
+def Test(): # ?
+    # NewPackage = unreal.new_object(unreal.Package,None,'/Game/nametest')
+    # print(NewPackage)
+    # NewConfig = unreal.new_object(unreal.MoviePipelineShotConfig,NewPackage,"nametest")
+    # print(NewConfig)
+    
+    # # NewConfig = unreal.MoviePipelineShotConfig()
+    # unreal.EditorAssetLibrary.save_loaded_asset(NewConfig,False)
+    # print("AAA")
+    pass
+
+def MovieRenderPipeline():
+    LevelSequenceEditorBlueprintLibrary = unreal.LevelSequenceEditorBlueprintLibrary()
+    CurLevelSequence = LevelSequenceEditorBlueprintLibrary.get_current_level_sequence()
+
+    # unreal.MovieRenderPipelineProjectSettings()
+
+    # unreal.SequencerTools().render_movie()
+    MoviePipelineQueue = unreal.MoviePipelineQueueSubsystem().get_queue()
+    print(MoviePipelineQueue)
+    jobs = unreal.MoviePipelineQueue.get_jobs(MoviePipelineQueue)
+    print(len(jobs))
+    
     pass
 
 if __name__ == "__main__":
@@ -196,3 +236,14 @@ if __name__ == "__main__":
     # GetLevelActors()
     pass
 
+# 这个是C++自己新增的一个函数
+def CreateAssetTest():
+    Asset_Tools = unreal.AssetToolsHelpers.get_asset_tools()
+    # unreal.AssetTools.create_asset_with_dialog
+    TupleName = unreal.AssetTools.create_unique_asset_name(Asset_Tools,'/Game/ASD/abc',"")
+    UniquePackageName ,UniqueAssetName = TupleName # 存入唯一包名 和 唯一资产名
+    Config = unreal.MoviePipelineShotConfig.get_default_object()
+    # unreal.MoviePipelineMasterConfig.initialize_transient_settings(Config)
+    print(unreal.MoviePipelineUtilLibrary.export_shot_config_to_asset(Config,UniquePackageName,UniqueAssetName,False))
+    unreal.log_error(TupleName)
+    pass
